@@ -5,6 +5,7 @@
   "version": "2.0.0",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://soniikot.github.io//memory-game-ts-strict",
   "author": {
     "name": "Patrick Jean Meurer",
     "email": "patrickjmeurer@gmail.com",
@@ -18,7 +19,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch ": "vitest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -46,6 +49,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
+    "gh-pages": "^6.1.1",
     "husky": "^8.0.0",
     "jsdom": "^23.0.0",
     "prettier": "^3.1.0",
