@@ -1,0 +1,17 @@
+.cardImage {
+  object-fit: cover;
+  width: 200px;
+  height: 200px;
+  position: relative;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  perspective: 1500px;
+  border-radius: 20px;
+  transform-style: preserve-3d;
+}
+.catField {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-inline: auto;
+  margin-bottom: 40px;
+}
