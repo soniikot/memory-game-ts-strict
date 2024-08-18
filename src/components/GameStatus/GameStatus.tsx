@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import Confetti from 'react-confetti';
 import { IGameStatus } from '../../types/common';
 
-const GameStatus: FC<IGameStatus> = ({ gameStatus, onClick, round }) => {
+const GameStatus: FC<IGameStatus> = ({ gameStatus, onClick, round }) => (
   <div>
     {gameStatus && (
       <div className="gameStatus">
@@ -17,7 +17,7 @@ const GameStatus: FC<IGameStatus> = ({ gameStatus, onClick, round }) => {
         )}
       </div>
     )}
-  </div>;
-};
+  </div>
+);
 
 export default GameStatus;

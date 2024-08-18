@@ -17,7 +17,8 @@ function useFetch(): IUseFetch {
       const json = await response.json();
       setIsLoading(false);
       setData(json);
-    } catch (fetchError) {
+    } catch (err) {
+      const fetchError = err as Error;
       setError(fetchError.message);
     }
   }
