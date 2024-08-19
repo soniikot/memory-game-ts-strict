@@ -1,6 +1,6 @@
 :root {
   max-width: 1280px;
-  margin: 0 auto;
+  margin-inline: auto;
   padding: 2rem;
   text-align: center;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -19,10 +19,11 @@
 }
 
 body {
-  margin: 0;
+  margin: auto;
   display: flex;
-  place-items: center;
+  align-items: center;
   min-height: 100vh;
+  justify-content: center;
 }
 
 h1 {
@@ -41,9 +42,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
