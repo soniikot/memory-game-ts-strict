@@ -1,18 +1,18 @@
 {
-  "name": "viterc",
+  "name": "!!!!!!!!!!",
   "private": false,
-  "description": "A modern minimal Vite 5 + React 18 + TypeScript template with pre-configured ESLint (with Airbnb JS/React rules), Prettier, Vitest and Git hooks with Husky out of the box 📦",
+  "description": "!!!!!!!!!",
   "version": "2.0.0",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://soniikot.github.io//memory-game-ts-strict",
+  "homepage": "https://soniikot.github.io/memory-game-ts-strict",
   "author": {
-    "name": "Patrick Jean Meurer",
-    "email": "patrickjmeurer@gmail.com",
-    "url": "https://github.com/potreco"
+    "name": "!!!!!!!!!!!!",
+    "email": "!!!!",
+    "url": "!!!!"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier .  --write",

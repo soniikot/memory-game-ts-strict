@@ -21,18 +21,16 @@ const App = () => {
     }
   }, [data, state.round]);
 
-  const rotateCards = () => {
-    dispatch({
-      type: 'set_round_cats',
-      payload: { roundCats: state.roundCats.sort(() => Math.random() - 0.5) },
-    });
-  };
-
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     const { id } = event.target as HTMLButtonElement;
+
     dispatch({ type: 'card_clicked', payload: { id } });
+
     if (state.gameStatus !== 'gameOver' && state.gameStatus !== 'gameWon') {
-      rotateCards();
+      dispatch({
+        type: 'set_round_cats',
+        payload: { roundCats: state.roundCats.sort(() => Math.random() - 0.5) },
+      });
     }
   };
 

@@ -1,3 +1,4 @@
+import type { Reducer } from 'react';
 import { IState, IAction } from '../types/common';
 
 export const initialState: IState = {
@@ -11,7 +12,7 @@ export const initialState: IState = {
   roundCats: [],
 };
 
-export const gameReducer: React.Reducer<IState, IAction> = (state, action) => {
+export const gameReducer: Reducer<IState, IAction> = (state, action) => {
   switch (action.type) {
     case 'start_game':
       return {

@@ -1,6 +1,6 @@
-import type { FC } from 'react';
 import Confetti from 'react-confetti';
-import { IGameStatus } from '../../types/common';
+import type { FC } from 'react';
+import type { IGameStatus } from '../../types/common';
 
 const GameStatus: FC<IGameStatus> = ({ gameStatus, onClick, round }) => (
   <div>

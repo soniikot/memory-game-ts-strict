@@ -16,13 +16,13 @@ module.exports = {
   },
   plugins: ['react-refresh', 'prettier', '@typescript-eslint'],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': 'warn',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'react/jsx-no-bind': 'off',
     'import/extensions': [
-      'error',
+      'warn',
       'ignorePackages',
       {
         '': 'never',
