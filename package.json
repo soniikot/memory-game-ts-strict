@@ -1,15 +1,14 @@
 {
-  "name": "!!!!!!!!!!",
+  "name": "memory-game",
   "private": false,
-  "description": "!!!!!!!!!",
+  "description": "memory game build in React using Typescript",
   "version": "2.0.0",
   "type": "module",
   "license": "MIT",
   "homepage": "https://soniikot.github.io/memory-game-ts-strict",
   "author": {
-    "name": "!!!!!!!!!!!!",
-    "email": "!!!!",
-    "url": "!!!!"
+    "name": "Sofia Kotova",
+    "email": "soniikot@gmail.com"
   },
   "scripts": {
     "dev": "vite --host",
