@@ -1,23 +1,33 @@
 import Confetti from 'react-confetti';
-import type { FC } from 'react';
-import type { IGameStatus } from '../../types/common';
+import { useContext, type FC, MouseEventHandler, Dispatch } from 'react';
+import { DispatchContext, StateContext } from '../../reducer/context';
+import { IAction } from '../../types/common';
+const GameStatus: FC = () => {
+  const state = useContext(StateContext);
+  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+  const { gameStatus, round } = state;
 
-const GameStatus: FC<IGameStatus> = ({ gameStatus, onClick, round }) => (
-  <div>
-    {gameStatus && (
-      <div className="gameStatus">
-        <h3>{gameStatus === 'gameWon' ? ' Congratulations, you won!' : ' Game Over! '}</h3>
-        {gameStatus === 'gameWon' && (
-          <>
-            <Confetti className="confetti" width={1800} height={1000} />
-            <button type="button" onClick={round === 5 ? () => window.location.reload() : onClick}>
-              {round === 5 ? 'Start Again' : 'Start Next Round'}
-            </button>
-          </>
-        )}
-      </div>
-    )}
-  </div>
-);
+  const startNextRound: MouseEventHandler<HTMLButtonElement> = () => {
+    dispatch({ type: 'start_new_round' });
+  };
+
+  return (
+    <div>
+      {gameStatus !== '' && (gameStatus === 'gameOver' || gameStatus === 'gameWon') && (
+        <div className="gameStatus">
+          <h3>{gameStatus === 'gameWon' ? ' Congratulations, you won!' : ' Game Over! '}</h3>
+          {gameStatus === 'gameWon' && (
+            <>
+              <Confetti className="confetti" width={1800} height={1000} />
+              <button type="button" onClick={startNextRound}>
+                {round === 5 ? 'Start Again' : 'Start Next Round'}
+              </button>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default GameStatus;

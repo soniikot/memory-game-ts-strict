@@ -28,18 +28,9 @@ export interface IAction {
   };
 }
 
-export interface IGameStatus {
-  onClick: MouseEventHandler<HTMLButtonElement>;
-  gameStatus: string;
-  round: number;
-}
-
 export interface IBoard {
-  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
-  roundCats: ICatData[];
   isLoading: boolean;
   error: TError;
-  isButtonsDisabled: boolean;
 }
 
 export interface IUseFetch {
