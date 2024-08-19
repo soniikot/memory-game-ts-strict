@@ -2,6 +2,7 @@ import Confetti from 'react-confetti';
 import { useContext, type FC, MouseEventHandler, Dispatch } from 'react';
 import { DispatchContext, StateContext } from '../../reducer/context';
 import { IAction } from '../../types/common';
+
 const GameStatus: FC = () => {
   const state = useContext(StateContext);
   const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
