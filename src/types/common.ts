@@ -1,5 +1,3 @@
-import { MouseEventHandler, MouseEvent } from 'react';
-
 export type TError = null | string;
 
 export interface ICatData {
