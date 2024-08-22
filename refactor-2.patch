@@ -1,473 +1,478 @@
-diff --git a/dist/index.html b/dist/index.html
-index 4533df2..3b131d1 100644
---- a/dist/index.html
-+++ b/dist/index.html
-@@ -7,7 +7,7 @@
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <link rel="icon" href="/assets/apple-touch-icon-CDbWSozh.png">
-   <title>Memory Game</title>
--  <script type="module" crossorigin src="./assets/index-C30OnYOi.js"></script>
-+  <script type="module" crossorigin src="/assets/index-C30OnYOi.js"></script>
-   <link rel="stylesheet" crossorigin href="/assets/index-D7J8jmUo.css">
- </head>
- 
-diff --git a/package-lock.json b/package-lock.json
-index 1fe8d20..f7df738 100644
---- a/package-lock.json
-+++ b/package-lock.json
-@@ -1,11 +1,11 @@
- {
--  "name": "viterc",
-+  "name": "memory-game",
-   "version": "2.0.0",
-   "lockfileVersion": 3,
-   "requires": true,
-   "packages": {
-     "": {
--      "name": "viterc",
-+      "name": "memory-game",
-       "version": "2.0.0",
-       "license": "MIT",
-       "dependencies": {
 diff --git a/refactor-2.patch b/refactor-2.patch
-new file mode 100644
-index 0000000..4e07beb
---- /dev/null
+index 23b80c9..e69de29 100644
+--- a/refactor-2.patch
 +++ b/refactor-2.patch
-@@ -0,0 +1,215 @@
-+diff --git a/dist/index.html b/dist/index.html
-+index 4533df2..3b131d1 100644
-+--- a/dist/index.html
-++++ b/dist/index.html
-+@@ -7,7 +7,7 @@
-+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-+   <link rel="icon" href="/assets/apple-touch-icon-CDbWSozh.png">
-+   <title>Memory Game</title>
-+-  <script type="module" crossorigin src="./assets/index-C30OnYOi.js"></script>
-++  <script type="module" crossorigin src="/assets/index-C30OnYOi.js"></script>
-+   <link rel="stylesheet" crossorigin href="/assets/index-D7J8jmUo.css">
-+ </head>
-+ 
-+diff --git a/package-lock.json b/package-lock.json
-+index 1fe8d20..f7df738 100644
-+--- a/package-lock.json
-++++ b/package-lock.json
-+@@ -1,11 +1,11 @@
-+ {
-+-  "name": "viterc",
-++  "name": "memory-game",
-+   "version": "2.0.0",
-+   "lockfileVersion": 3,
-+   "requires": true,
-+   "packages": {
-+     "": {
-+-      "name": "viterc",
-++      "name": "memory-game",
-+       "version": "2.0.0",
-+       "license": "MIT",
-+       "dependencies": {
-+diff --git a/src/App.tsx b/src/App.tsx
-+index 1eadbf5..46327a4 100644
-+--- a/src/App.tsx
-++++ b/src/App.tsx
-+@@ -11,16 +11,19 @@ import { IAction } from './types/common';
-+ const App = () => {
-+   const { data, isLoading, error } = useFetch();
-+   const state = useContext(StateContext);
-++
-++  const {showStartButton, showBoard, round}= state;
-++
-+   const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
-+   useEffect(() => {
-+     if (data) {
-+-      const newRoundCats = data.slice(0, Math.min(10, 0 + state.round * 2));
-++      const newRoundCats = data.slice(0, Math.min(10, 0 + round * 2));
-+       dispatch({
-+         type: 'set_round_cats',
-+         payload: { roundCats: newRoundCats },
-+       });
-+     }
-+-  }, [data, state.round]);
-++  }, [data, round]);
-+ 
-+   const startGame = () => {
-+     dispatch({ type: 'start_game' });
-+@@ -30,16 +33,16 @@ const App = () => {
-+     <>
-+       <h1>Memory Game</h1>
-+       <div className="card">
-+-        {state.showStartButton && (
-++        {showStartButton && (
-+           <button type="button" className="start-btn" onClick={startGame}>
-+             Start Game
-+           </button>
-+         )}
-+-        {state.showBoard && (
-++        {showBoard && (
-+           <>
-+             <GameStatus />
-+             <Board isLoading={isLoading} error={error} />
-+-            <h2>Round {state.round}</h2>
-++            <h2>Round {round}</h2>
-+             <Score />
-+           </>
-+         )}
-+diff --git a/src/components/Board/Board.tsx b/src/components/Board/Board.tsx
-+index f02f4c0..20552fc 100644
-+--- a/src/components/Board/Board.tsx
-++++ b/src/components/Board/Board.tsx
-+@@ -2,11 +2,11 @@ import { useContext } from 'react';
-+ import type { FC, MouseEvent, Dispatch } from 'react';
-+ import './Board.css';
-+ import { DispatchContext, StateContext } from '../../reducer/context';
-+-import type { IBoard, IAction } from '../../types/common';
-++import type { IBoard } from '../../types/common';
-+ 
-+ const Board: FC<IBoard> = ({ isLoading, error }) => {
-+   const state = useContext(StateContext);
-+-  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
-++  const dispatch = useContext(DispatchContext);
-+ 
-+   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-+     const { id } = event.target as HTMLButtonElement;
-+@@ -25,13 +25,13 @@ const Board: FC<IBoard> = ({ isLoading, error }) => {
-+       <h2>Do not click at the same card twice!</h2>
-+       {isLoading && <div>Loading...</div>}
-+       {error && <div>{error}</div>}
-+-      <div className="catField">
-+-        {(state?.roundCats ?? []).map(({ id, url, title }) => (
-++      {!error && (<div className="catField">
-++        {(state.roundCats).map(({ id, url, title }) => (
-+           <button type="button" disabled={state.isButtonsDisabled} onClick={handleClick} key={id}>
-+             <img className="cardImage" id={id} src={url} alt={title} />
-+           </button>
-+         ))}
-+-      </div>
-++      </div>)}
-+     </>
-+   );
-+ };
-+diff --git a/src/components/GameStatus/GameStatus.tsx b/src/components/GameStatus/GameStatus.tsx
-+index 6919c5b..b91dc08 100644
-+--- a/src/components/GameStatus/GameStatus.tsx
-++++ b/src/components/GameStatus/GameStatus.tsx
-+@@ -1,11 +1,11 @@
-+ import Confetti from 'react-confetti';
-+-import { useContext, type FC, MouseEventHandler, Dispatch } from 'react';
-++import { useContext, type FC, MouseEventHandler } from 'react';
-+ import { DispatchContext, StateContext } from '../../reducer/context';
-+-import { IAction } from '../../types/common';
-++import { EGameStatus } from '../../types/common';
-+ 
-+ const GameStatus: FC = () => {
-+   const state = useContext(StateContext);
-+-  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
-++  const dispatch = useContext(DispatchContext);
-+   const { gameStatus, round } = state;
-+ 
-+   const startNextRound: MouseEventHandler<HTMLButtonElement> = () => {
-+@@ -14,10 +14,10 @@ const GameStatus: FC = () => {
-+ 
-+   return (
-+     <div>
-+-      {gameStatus !== '' && (gameStatus === 'gameOver' || gameStatus === 'gameWon') && (
-++      {gameStatus !== '' && (
-+         <div className="gameStatus">
-+-          <h3>{gameStatus === 'gameWon' ? ' Congratulations, you won!' : ' Game Over! '}</h3>
-+-          {gameStatus === 'gameWon' && (
-++          <h3>{gameStatus === EGameStatus.gameWon ? ' Congratulations, you won!' : ' Game Over! '}</h3>
-++          {gameStatus === EGameStatus.gameOver && (
-+             <>
-+               <Confetti className="confetti" width={1800} height={1000} />
-+               <button type="button" onClick={startNextRound}>
-+diff --git a/src/components/Score/Score.tsx b/src/components/Score/Score.tsx
-+index 265735e..9cb5a26 100644
-+--- a/src/components/Score/Score.tsx
-++++ b/src/components/Score/Score.tsx
-+@@ -5,13 +5,15 @@ import { StateContext } from '../../reducer/context';
-+ const Score: FC = () => {
-+   const bestScore = parseInt(localStorage.getItem('bestScore') || '0', 10);
-+   const state = useContext(StateContext);
-++  
-++  const { score } = state
-+ 
-+   if (state.score > bestScore) {
-+-    localStorage.setItem('bestScore', state.score.toString());
-++    localStorage.setItem('bestScore', score.toString());
-+   }
-+   return (
-+     <>
-+-      <h3>Current Score: {state.score}</h3>
-++      <h3>Current Score: {score}</h3>
-+       <h3>Best Score: {bestScore}</h3>
-+     </>
-+   );
-+diff --git a/src/reducer/context.tsx b/src/reducer/context.tsx
-+index 8ac389e..88ac905 100644
-+--- a/src/reducer/context.tsx
-++++ b/src/reducer/context.tsx
-+@@ -1,13 +1,13 @@
-+-import type { ReactNode, Dispatch } from 'react';
-++import type { Dispatch, PropsWithChildren, FC } from 'react';
-+ import { createContext, useReducer } from 'react';
-+ import { gameReducer, initialState } from './gameReducer';
-+ 
-+ import type { IState, IAction } from '../types/common';
-+ 
-+ export const StateContext = createContext<IState>(initialState);
-+-export const DispatchContext = createContext<Dispatch<IAction> | null>(null);
-++export const DispatchContext = createContext<Dispatch<IAction>>(() => ({type: 'start_new_round' }));
-+ 
-+-export const StateProvider = ({ children }: { children: ReactNode }) => {
-++export const StateProvider: FC<PropsWithChildren>  = ({ children }) => {
-+   const [state, dispatch] = useReducer(gameReducer, initialState);
-+ 
-+   return (
-+diff --git a/src/reducer/gameReducer.ts b/src/reducer/gameReducer.ts
-+index b9fe7d6..2b50c84 100644
-+--- a/src/reducer/gameReducer.ts
-++++ b/src/reducer/gameReducer.ts
-+@@ -10,6 +10,8 @@ export const initialState: IState = {
-+   score: 0,
-+   isButtonsDisabled: false,
-+   roundCats: [],
-++//   isLoading: false,
-++//   error: null,
-+ };
-+ 
-+ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
-+diff --git a/src/types/common.ts b/src/types/common.ts
-+index 47ff880..c593996 100644
-+--- a/src/types/common.ts
-++++ b/src/types/common.ts
-+@@ -36,3 +36,8 @@ export interface IUseFetch {
-+   isLoading: boolean;
-+   error: TError;
-+ }
-++
-++export enum EGameStatus {
-++  gameWon = 'gameWon',
-++  gameOver = "gameOver",
-++}
-+\ No newline at end of file
-diff --git a/src/App.tsx b/src/App.tsx
-index 1eadbf5..d9d6c04 100644
---- a/src/App.tsx
-+++ b/src/App.tsx
-@@ -9,18 +9,10 @@ import { DispatchContext, StateContext } from './reducer/context';
- import { IAction } from './types/common';
- 
- const App = () => {
--  const { data, isLoading, error } = useFetch();
-   const state = useContext(StateContext);
--  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
--  useEffect(() => {
--    if (data) {
--      const newRoundCats = data.slice(0, Math.min(10, 0 + state.round * 2));
--      dispatch({
--        type: 'set_round_cats',
--        payload: { roundCats: newRoundCats },
--      });
--    }
--  }, [data, state.round]);
-+  const dispatch = useContext(DispatchContext);
-+  
-+  const {showStartButton, showBoard, round, isLoading, error}= state;
- 
-   const startGame = () => {
-     dispatch({ type: 'start_game' });
-@@ -30,16 +22,16 @@ const App = () => {
-     <>
-       <h1>Memory Game</h1>
-       <div className="card">
--        {state.showStartButton && (
-+        {showStartButton && (
-           <button type="button" className="start-btn" onClick={startGame}>
-             Start Game
-           </button>
-         )}
--        {state.showBoard && (
-+        {showBoard && (
-           <>
-             <GameStatus />
-             <Board isLoading={isLoading} error={error} />
--            <h2>Round {state.round}</h2>
-+            <h2>Round {round}</h2>
-             <Score />
-           </>
-         )}
-diff --git a/src/components/Board/Board.tsx b/src/components/Board/Board.tsx
-index f02f4c0..20552fc 100644
---- a/src/components/Board/Board.tsx
-+++ b/src/components/Board/Board.tsx
-@@ -2,11 +2,11 @@ import { useContext } from 'react';
- import type { FC, MouseEvent, Dispatch } from 'react';
- import './Board.css';
- import { DispatchContext, StateContext } from '../../reducer/context';
--import type { IBoard, IAction } from '../../types/common';
-+import type { IBoard } from '../../types/common';
- 
- const Board: FC<IBoard> = ({ isLoading, error }) => {
-   const state = useContext(StateContext);
--  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
-+  const dispatch = useContext(DispatchContext);
- 
-   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-     const { id } = event.target as HTMLButtonElement;
-@@ -25,13 +25,13 @@ const Board: FC<IBoard> = ({ isLoading, error }) => {
-       <h2>Do not click at the same card twice!</h2>
-       {isLoading && <div>Loading...</div>}
-       {error && <div>{error}</div>}
--      <div className="catField">
--        {(state?.roundCats ?? []).map(({ id, url, title }) => (
-+      {!error && (<div className="catField">
-+        {(state.roundCats).map(({ id, url, title }) => (
-           <button type="button" disabled={state.isButtonsDisabled} onClick={handleClick} key={id}>
-             <img className="cardImage" id={id} src={url} alt={title} />
-           </button>
-         ))}
--      </div>
-+      </div>)}
-     </>
-   );
- };
-diff --git a/src/components/GameStatus/GameStatus.tsx b/src/components/GameStatus/GameStatus.tsx
-index 6919c5b..b91dc08 100644
---- a/src/components/GameStatus/GameStatus.tsx
-+++ b/src/components/GameStatus/GameStatus.tsx
-@@ -1,11 +1,11 @@
- import Confetti from 'react-confetti';
--import { useContext, type FC, MouseEventHandler, Dispatch } from 'react';
-+import { useContext, type FC, MouseEventHandler } from 'react';
- import { DispatchContext, StateContext } from '../../reducer/context';
--import { IAction } from '../../types/common';
-+import { EGameStatus } from '../../types/common';
- 
- const GameStatus: FC = () => {
-   const state = useContext(StateContext);
--  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
-+  const dispatch = useContext(DispatchContext);
-   const { gameStatus, round } = state;
- 
-   const startNextRound: MouseEventHandler<HTMLButtonElement> = () => {
-@@ -14,10 +14,10 @@ const GameStatus: FC = () => {
- 
-   return (
-     <div>
--      {gameStatus !== '' && (gameStatus === 'gameOver' || gameStatus === 'gameWon') && (
-+      {gameStatus !== '' && (
-         <div className="gameStatus">
--          <h3>{gameStatus === 'gameWon' ? ' Congratulations, you won!' : ' Game Over! '}</h3>
--          {gameStatus === 'gameWon' && (
-+          <h3>{gameStatus === EGameStatus.gameWon ? ' Congratulations, you won!' : ' Game Over! '}</h3>
-+          {gameStatus === EGameStatus.gameOver && (
-             <>
-               <Confetti className="confetti" width={1800} height={1000} />
-               <button type="button" onClick={startNextRound}>
-diff --git a/src/components/Score/Score.tsx b/src/components/Score/Score.tsx
-index 265735e..9cb5a26 100644
---- a/src/components/Score/Score.tsx
-+++ b/src/components/Score/Score.tsx
-@@ -5,13 +5,15 @@ import { StateContext } from '../../reducer/context';
- const Score: FC = () => {
-   const bestScore = parseInt(localStorage.getItem('bestScore') || '0', 10);
-   const state = useContext(StateContext);
-+  
-+  const { score } = state
- 
-   if (state.score > bestScore) {
--    localStorage.setItem('bestScore', state.score.toString());
-+    localStorage.setItem('bestScore', score.toString());
-   }
-   return (
-     <>
--      <h3>Current Score: {state.score}</h3>
-+      <h3>Current Score: {score}</h3>
-       <h3>Best Score: {bestScore}</h3>
-     </>
-   );
-diff --git a/src/reducer/context.tsx b/src/reducer/context.tsx
-index 8ac389e..8950ed9 100644
---- a/src/reducer/context.tsx
-+++ b/src/reducer/context.tsx
-@@ -1,15 +1,47 @@
--import type { ReactNode, Dispatch } from 'react';
--import { createContext, useReducer } from 'react';
-+import type { Dispatch, PropsWithChildren, FC } from 'react';
-+import { createContext, useEffect, useReducer } from 'react';
- import { gameReducer, initialState } from './gameReducer';
- 
- import type { IState, IAction } from '../types/common';
--
-+import useFetch from '../hooks/useFetch';
- export const StateContext = createContext<IState>(initialState);
--export const DispatchContext = createContext<Dispatch<IAction> | null>(null);
-+export const DispatchContext = createContext<Dispatch<IAction>>(() => ({type: 'start_new_round' }));
- 
--export const StateProvider = ({ children }: { children: ReactNode }) => {
-+export const StateProvider: FC<PropsWithChildren>  = ({ children }) => {
-   const [state, dispatch] = useReducer(gameReducer, initialState);
- 
-+  const { data } = useFetch();
-+
-+  // useEffect(() => {
-+  //   if (data) {
-+  //     const newRoundCats = data.slice(0, Math.min(10, 0 + round * 2));
-+  //     dispatch({
-+  //       type: 'set_round_cats',
-+  //       payload: { roundCats: newRoundCats },
-+  //     });
-+  //   }
-+  // }, [data, round]);
-+
-+  useEffect(() => {
-+    if(!data){
-+      return
-+    }
-+    
-+    const newRoundCats = data.slice(0, Math.min(10, 1 * 2));
-+
-+    dispatch({
-+      type: 'set_round_cats',
-+      payload: { roundCats: newRoundCats },
-+    });
-+
-+    dispatch({
-+      type: 'cats_cats'
-+      payload: {catsData: data}
-+    })
-+
-+  }, [])
-+
-+
-   return (
-     <StateContext.Provider value={state}>
-       <DispatchContext.Provider value={dispatch}>{children}</DispatchContext.Provider>
-diff --git a/src/reducer/gameReducer.ts b/src/reducer/gameReducer.ts
-index b9fe7d6..46cd337 100644
---- a/src/reducer/gameReducer.ts
-+++ b/src/reducer/gameReducer.ts
-@@ -10,6 +10,9 @@ export const initialState: IState = {
-   score: 0,
-   isButtonsDisabled: false,
-   roundCats: [],
-+  //   isLoading: false,
-+  //   error: null,
-+  // data: []
- };
- 
- export const gameReducer: Reducer<IState, IAction> = (state, action) => {
-diff --git a/src/types/common.ts b/src/types/common.ts
-index 47ff880..c593996 100644
---- a/src/types/common.ts
-+++ b/src/types/common.ts
-@@ -36,3 +36,8 @@ export interface IUseFetch {
-   isLoading: boolean;
-   error: TError;
- }
-+
-+export enum EGameStatus {
-+  gameWon = 'gameWon',
-+  gameOver = "gameOver",
-+}
-\ No newline at end of file
+@@ -1,473 +0,0 @@
+-diff --git a/dist/index.html b/dist/index.html
+-index 4533df2..3b131d1 100644
+---- a/dist/index.html
+-+++ b/dist/index.html
+-@@ -7,7 +7,7 @@
+-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-   <link rel="icon" href="/assets/apple-touch-icon-CDbWSozh.png">
+-   <title>Memory Game</title>
+--  <script type="module" crossorigin src="./assets/index-C30OnYOi.js"></script>
+-+  <script type="module" crossorigin src="/assets/index-C30OnYOi.js"></script>
+-   <link rel="stylesheet" crossorigin href="/assets/index-D7J8jmUo.css">
+- </head>
+- 
+-diff --git a/package-lock.json b/package-lock.json
+-index 1fe8d20..f7df738 100644
+---- a/package-lock.json
+-+++ b/package-lock.json
+-@@ -1,11 +1,11 @@
+- {
+--  "name": "viterc",
+-+  "name": "memory-game",
+-   "version": "2.0.0",
+-   "lockfileVersion": 3,
+-   "requires": true,
+-   "packages": {
+-     "": {
+--      "name": "viterc",
+-+      "name": "memory-game",
+-       "version": "2.0.0",
+-       "license": "MIT",
+-       "dependencies": {
+-diff --git a/refactor-2.patch b/refactor-2.patch
+-new file mode 100644
+-index 0000000..4e07beb
+---- /dev/null
+-+++ b/refactor-2.patch
+-@@ -0,0 +1,215 @@
+-+diff --git a/dist/index.html b/dist/index.html
+-+index 4533df2..3b131d1 100644
+-+--- a/dist/index.html
+-++++ b/dist/index.html
+-+@@ -7,7 +7,7 @@
+-+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-+   <link rel="icon" href="/assets/apple-touch-icon-CDbWSozh.png">
+-+   <title>Memory Game</title>
+-+-  <script type="module" crossorigin src="./assets/index-C30OnYOi.js"></script>
+-++  <script type="module" crossorigin src="/assets/index-C30OnYOi.js"></script>
+-+   <link rel="stylesheet" crossorigin href="/assets/index-D7J8jmUo.css">
+-+ </head>
+-+ 
+-+diff --git a/package-lock.json b/package-lock.json
+-+index 1fe8d20..f7df738 100644
+-+--- a/package-lock.json
+-++++ b/package-lock.json
+-+@@ -1,11 +1,11 @@
+-+ {
+-+-  "name": "viterc",
+-++  "name": "memory-game",
+-+   "version": "2.0.0",
+-+   "lockfileVersion": 3,
+-+   "requires": true,
+-+   "packages": {
+-+     "": {
+-+-      "name": "viterc",
+-++      "name": "memory-game",
+-+       "version": "2.0.0",
+-+       "license": "MIT",
+-+       "dependencies": {
+-+diff --git a/src/App.tsx b/src/App.tsx
+-+index 1eadbf5..46327a4 100644
+-+--- a/src/App.tsx
+-++++ b/src/App.tsx
+-+@@ -11,16 +11,19 @@ import { IAction } from './types/common';
+-+ const App = () => {
+-+   const { data, isLoading, error } = useFetch();
+-+   const state = useContext(StateContext);
+-++
+-++  const {showStartButton, showBoard, round}= state;
+-++
+-+   const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+-+   useEffect(() => {
+-+     if (data) {
+-+-      const newRoundCats = data.slice(0, Math.min(10, 0 + state.round * 2));
+-++      const newRoundCats = data.slice(0, Math.min(10, 0 + round * 2));
+-+       dispatch({
+-+         type: 'set_round_cats',
+-+         payload: { roundCats: newRoundCats },
+-+       });
+-+     }
+-+-  }, [data, state.round]);
+-++  }, [data, round]);
+-+ 
+-+   const startGame = () => {
+-+     dispatch({ type: 'start_game' });
+-+@@ -30,16 +33,16 @@ const App = () => {
+-+     <>
+-+       <h1>Memory Game</h1>
+-+       <div className="card">
+-+-        {state.showStartButton && (
+-++        {showStartButton && (
+-+           <button type="button" className="start-btn" onClick={startGame}>
+-+             Start Game
+-+           </button>
+-+         )}
+-+-        {state.showBoard && (
+-++        {showBoard && (
+-+           <>
+-+             <GameStatus />
+-+             <Board isLoading={isLoading} error={error} />
+-+-            <h2>Round {state.round}</h2>
+-++            <h2>Round {round}</h2>
+-+             <Score />
+-+           </>
+-+         )}
+-+diff --git a/src/components/Board/Board.tsx b/src/components/Board/Board.tsx
+-+index f02f4c0..20552fc 100644
+-+--- a/src/components/Board/Board.tsx
+-++++ b/src/components/Board/Board.tsx
+-+@@ -2,11 +2,11 @@ import { useContext } from 'react';
+-+ import type { FC, MouseEvent, Dispatch } from 'react';
+-+ import './Board.css';
+-+ import { DispatchContext, StateContext } from '../../reducer/context';
+-+-import type { IBoard, IAction } from '../../types/common';
+-++import type { IBoard } from '../../types/common';
+-+ 
+-+ const Board: FC<IBoard> = ({ isLoading, error }) => {
+-+   const state = useContext(StateContext);
+-+-  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+-++  const dispatch = useContext(DispatchContext);
+-+ 
+-+   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+-+     const { id } = event.target as HTMLButtonElement;
+-+@@ -25,13 +25,13 @@ const Board: FC<IBoard> = ({ isLoading, error }) => {
+-+       <h2>Do not click at the same card twice!</h2>
+-+       {isLoading && <div>Loading...</div>}
+-+       {error && <div>{error}</div>}
+-+-      <div className="catField">
+-+-        {(state?.roundCats ?? []).map(({ id, url, title }) => (
+-++      {!error && (<div className="catField">
+-++        {(state.roundCats).map(({ id, url, title }) => (
+-+           <button type="button" disabled={state.isButtonsDisabled} onClick={handleClick} key={id}>
+-+             <img className="cardImage" id={id} src={url} alt={title} />
+-+           </button>
+-+         ))}
+-+-      </div>
+-++      </div>)}
+-+     </>
+-+   );
+-+ };
+-+diff --git a/src/components/GameStatus/GameStatus.tsx b/src/components/GameStatus/GameStatus.tsx
+-+index 6919c5b..b91dc08 100644
+-+--- a/src/components/GameStatus/GameStatus.tsx
+-++++ b/src/components/GameStatus/GameStatus.tsx
+-+@@ -1,11 +1,11 @@
+-+ import Confetti from 'react-confetti';
+-+-import { useContext, type FC, MouseEventHandler, Dispatch } from 'react';
+-++import { useContext, type FC, MouseEventHandler } from 'react';
+-+ import { DispatchContext, StateContext } from '../../reducer/context';
+-+-import { IAction } from '../../types/common';
+-++import { EGameStatus } from '../../types/common';
+-+ 
+-+ const GameStatus: FC = () => {
+-+   const state = useContext(StateContext);
+-+-  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+-++  const dispatch = useContext(DispatchContext);
+-+   const { gameStatus, round } = state;
+-+ 
+-+   const startNextRound: MouseEventHandler<HTMLButtonElement> = () => {
+-+@@ -14,10 +14,10 @@ const GameStatus: FC = () => {
+-+ 
+-+   return (
+-+     <div>
+-+-      {gameStatus !== '' && (gameStatus === 'gameOver' || gameStatus === 'gameWon') && (
+-++      {gameStatus !== '' && (
+-+         <div className="gameStatus">
+-+-          <h3>{gameStatus === 'gameWon' ? ' Congratulations, you won!' : ' Game Over! '}</h3>
+-+-          {gameStatus === 'gameWon' && (
+-++          <h3>{gameStatus === EGameStatus.gameWon ? ' Congratulations, you won!' : ' Game Over! '}</h3>
+-++          {gameStatus === EGameStatus.gameOver && (
+-+             <>
+-+               <Confetti className="confetti" width={1800} height={1000} />
+-+               <button type="button" onClick={startNextRound}>
+-+diff --git a/src/components/Score/Score.tsx b/src/components/Score/Score.tsx
+-+index 265735e..9cb5a26 100644
+-+--- a/src/components/Score/Score.tsx
+-++++ b/src/components/Score/Score.tsx
+-+@@ -5,13 +5,15 @@ import { StateContext } from '../../reducer/context';
+-+ const Score: FC = () => {
+-+   const bestScore = parseInt(localStorage.getItem('bestScore') || '0', 10);
+-+   const state = useContext(StateContext);
+-++  
+-++  const { score } = state
+-+ 
+-+   if (state.score > bestScore) {
+-+-    localStorage.setItem('bestScore', state.score.toString());
+-++    localStorage.setItem('bestScore', score.toString());
+-+   }
+-+   return (
+-+     <>
+-+-      <h3>Current Score: {state.score}</h3>
+-++      <h3>Current Score: {score}</h3>
+-+       <h3>Best Score: {bestScore}</h3>
+-+     </>
+-+   );
+-+diff --git a/src/reducer/context.tsx b/src/reducer/context.tsx
+-+index 8ac389e..88ac905 100644
+-+--- a/src/reducer/context.tsx
+-++++ b/src/reducer/context.tsx
+-+@@ -1,13 +1,13 @@
+-+-import type { ReactNode, Dispatch } from 'react';
+-++import type { Dispatch, PropsWithChildren, FC } from 'react';
+-+ import { createContext, useReducer } from 'react';
+-+ import { gameReducer, initialState } from './gameReducer';
+-+ 
+-+ import type { IState, IAction } from '../types/common';
+-+ 
+-+ export const StateContext = createContext<IState>(initialState);
+-+-export const DispatchContext = createContext<Dispatch<IAction> | null>(null);
+-++export const DispatchContext = createContext<Dispatch<IAction>>(() => ({type: 'start_new_round' }));
+-+ 
+-+-export const StateProvider = ({ children }: { children: ReactNode }) => {
+-++export const StateProvider: FC<PropsWithChildren>  = ({ children }) => {
+-+   const [state, dispatch] = useReducer(gameReducer, initialState);
+-+ 
+-+   return (
+-+diff --git a/src/reducer/gameReducer.ts b/src/reducer/gameReducer.ts
+-+index b9fe7d6..2b50c84 100644
+-+--- a/src/reducer/gameReducer.ts
+-++++ b/src/reducer/gameReducer.ts
+-+@@ -10,6 +10,8 @@ export const initialState: IState = {
+-+   score: 0,
+-+   isButtonsDisabled: false,
+-+   roundCats: [],
+-++//   isLoading: false,
+-++//   error: null,
+-+ };
+-+ 
+-+ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
+-+diff --git a/src/types/common.ts b/src/types/common.ts
+-+index 47ff880..c593996 100644
+-+--- a/src/types/common.ts
+-++++ b/src/types/common.ts
+-+@@ -36,3 +36,8 @@ export interface IUseFetch {
+-+   isLoading: boolean;
+-+   error: TError;
+-+ }
+-++
+-++export enum EGameStatus {
+-++  gameWon = 'gameWon',
+-++  gameOver = "gameOver",
+-++}
+-+\ No newline at end of file
+-diff --git a/src/App.tsx b/src/App.tsx
+-index 1eadbf5..d9d6c04 100644
+---- a/src/App.tsx
+-+++ b/src/App.tsx
+-@@ -9,18 +9,10 @@ import { DispatchContext, StateContext } from './reducer/context';
+- import { IAction } from './types/common';
+- 
+- const App = () => {
+--  const { data, isLoading, error } = useFetch();
+-   const state = useContext(StateContext);
+--  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+--  useEffect(() => {
+--    if (data) {
+--      const newRoundCats = data.slice(0, Math.min(10, 0 + state.round * 2));
+--      dispatch({
+--        type: 'set_round_cats',
+--        payload: { roundCats: newRoundCats },
+--      });
+--    }
+--  }, [data, state.round]);
+-+  const dispatch = useContext(DispatchContext);
+-+  
+-+  const {showStartButton, showBoard, round, isLoading, error}= state;
+- 
+-   const startGame = () => {
+-     dispatch({ type: 'start_game' });
+-@@ -30,16 +22,16 @@ const App = () => {
+-     <>
+-       <h1>Memory Game</h1>
+-       <div className="card">
+--        {state.showStartButton && (
+-+        {showStartButton && (
+-           <button type="button" className="start-btn" onClick={startGame}>
+-             Start Game
+-           </button>
+-         )}
+--        {state.showBoard && (
+-+        {showBoard && (
+-           <>
+-             <GameStatus />
+-             <Board isLoading={isLoading} error={error} />
+--            <h2>Round {state.round}</h2>
+-+            <h2>Round {round}</h2>
+-             <Score />
+-           </>
+-         )}
+-diff --git a/src/components/Board/Board.tsx b/src/components/Board/Board.tsx
+-index f02f4c0..20552fc 100644
+---- a/src/components/Board/Board.tsx
+-+++ b/src/components/Board/Board.tsx
+-@@ -2,11 +2,11 @@ import { useContext } from 'react';
+- import type { FC, MouseEvent, Dispatch } from 'react';
+- import './Board.css';
+- import { DispatchContext, StateContext } from '../../reducer/context';
+--import type { IBoard, IAction } from '../../types/common';
+-+import type { IBoard } from '../../types/common';
+- 
+- const Board: FC<IBoard> = ({ isLoading, error }) => {
+-   const state = useContext(StateContext);
+--  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+-+  const dispatch = useContext(DispatchContext);
+- 
+-   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+-     const { id } = event.target as HTMLButtonElement;
+-@@ -25,13 +25,13 @@ const Board: FC<IBoard> = ({ isLoading, error }) => {
+-       <h2>Do not click at the same card twice!</h2>
+-       {isLoading && <div>Loading...</div>}
+-       {error && <div>{error}</div>}
+--      <div className="catField">
+--        {(state?.roundCats ?? []).map(({ id, url, title }) => (
+-+      {!error && (<div className="catField">
+-+        {(state.roundCats).map(({ id, url, title }) => (
+-           <button type="button" disabled={state.isButtonsDisabled} onClick={handleClick} key={id}>
+-             <img className="cardImage" id={id} src={url} alt={title} />
+-           </button>
+-         ))}
+--      </div>
+-+      </div>)}
+-     </>
+-   );
+- };
+-diff --git a/src/components/GameStatus/GameStatus.tsx b/src/components/GameStatus/GameStatus.tsx
+-index 6919c5b..b91dc08 100644
+---- a/src/components/GameStatus/GameStatus.tsx
+-+++ b/src/components/GameStatus/GameStatus.tsx
+-@@ -1,11 +1,11 @@
+- import Confetti from 'react-confetti';
+--import { useContext, type FC, MouseEventHandler, Dispatch } from 'react';
+-+import { useContext, type FC, MouseEventHandler } from 'react';
+- import { DispatchContext, StateContext } from '../../reducer/context';
+--import { IAction } from '../../types/common';
+-+import { EGameStatus } from '../../types/common';
+- 
+- const GameStatus: FC = () => {
+-   const state = useContext(StateContext);
+--  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+-+  const dispatch = useContext(DispatchContext);
+-   const { gameStatus, round } = state;
+- 
+-   const startNextRound: MouseEventHandler<HTMLButtonElement> = () => {
+-@@ -14,10 +14,10 @@ const GameStatus: FC = () => {
+- 
+-   return (
+-     <div>
+--      {gameStatus !== '' && (gameStatus === 'gameOver' || gameStatus === 'gameWon') && (
+-+      {gameStatus !== '' && (
+-         <div className="gameStatus">
+--          <h3>{gameStatus === 'gameWon' ? ' Congratulations, you won!' : ' Game Over! '}</h3>
+--          {gameStatus === 'gameWon' && (
+-+          <h3>{gameStatus === EGameStatus.gameWon ? ' Congratulations, you won!' : ' Game Over! '}</h3>
+-+          {gameStatus === EGameStatus.gameOver && (
+-             <>
+-               <Confetti className="confetti" width={1800} height={1000} />
+-               <button type="button" onClick={startNextRound}>
+-diff --git a/src/components/Score/Score.tsx b/src/components/Score/Score.tsx
+-index 265735e..9cb5a26 100644
+---- a/src/components/Score/Score.tsx
+-+++ b/src/components/Score/Score.tsx
+-@@ -5,13 +5,15 @@ import { StateContext } from '../../reducer/context';
+- const Score: FC = () => {
+-   const bestScore = parseInt(localStorage.getItem('bestScore') || '0', 10);
+-   const state = useContext(StateContext);
+-+  
+-+  const { score } = state
+- 
+-   if (state.score > bestScore) {
+--    localStorage.setItem('bestScore', state.score.toString());
+-+    localStorage.setItem('bestScore', score.toString());
+-   }
+-   return (
+-     <>
+--      <h3>Current Score: {state.score}</h3>
+-+      <h3>Current Score: {score}</h3>
+-       <h3>Best Score: {bestScore}</h3>
+-     </>
+-   );
+-diff --git a/src/reducer/context.tsx b/src/reducer/context.tsx
+-index 8ac389e..8950ed9 100644
+---- a/src/reducer/context.tsx
+-+++ b/src/reducer/context.tsx
+-@@ -1,15 +1,47 @@
+--import type { ReactNode, Dispatch } from 'react';
+--import { createContext, useReducer } from 'react';
+-+import type { Dispatch, PropsWithChildren, FC } from 'react';
+-+import { createContext, useEffect, useReducer } from 'react';
+- import { gameReducer, initialState } from './gameReducer';
+- 
+- import type { IState, IAction } from '../types/common';
+--
+-+import useFetch from '../hooks/useFetch';
+- export const StateContext = createContext<IState>(initialState);
+--export const DispatchContext = createContext<Dispatch<IAction> | null>(null);
+-+export const DispatchContext = createContext<Dispatch<IAction>>(() => ({type: 'start_new_round' }));
+- 
+--export const StateProvider = ({ children }: { children: ReactNode }) => {
+-+export const StateProvider: FC<PropsWithChildren>  = ({ children }) => {
+-   const [state, dispatch] = useReducer(gameReducer, initialState);
+- 
+-+  const { data } = useFetch();
+-+
+-+  // useEffect(() => {
+-+  //   if (data) {
+-+  //     const newRoundCats = data.slice(0, Math.min(10, 0 + round * 2));
+-+  //     dispatch({
+-+  //       type: 'set_round_cats',
+-+  //       payload: { roundCats: newRoundCats },
+-+  //     });
+-+  //   }
+-+  // }, [data, round]);
+-+
+-+  useEffect(() => {
+-+    if(!data){
+-+      return
+-+    }
+-+    
+-+    const newRoundCats = data.slice(0, Math.min(10, 1 * 2));
+-+
+-+    dispatch({
+-+      type: 'set_round_cats',
+-+      payload: { roundCats: newRoundCats },
+-+    });
+-+
+-+    dispatch({
+-+      type: 'cats_cats'
+-+      payload: {catsData: data}
+-+    })
+-+
+-+  }, [])
+-+
+-+
+-   return (
+-     <StateContext.Provider value={state}>
+-       <DispatchContext.Provider value={dispatch}>{children}</DispatchContext.Provider>
+-diff --git a/src/reducer/gameReducer.ts b/src/reducer/gameReducer.ts
+-index b9fe7d6..46cd337 100644
+---- a/src/reducer/gameReducer.ts
+-+++ b/src/reducer/gameReducer.ts
+-@@ -10,6 +10,9 @@ export const initialState: IState = {
+-   score: 0,
+-   isButtonsDisabled: false,
+-   roundCats: [],
+-+  //   isLoading: false,
+-+  //   error: null,
+-+  // data: []
+- };
+- 
+- export const gameReducer: Reducer<IState, IAction> = (state, action) => {
+-diff --git a/src/types/common.ts b/src/types/common.ts
+-index 47ff880..c593996 100644
+---- a/src/types/common.ts
+-+++ b/src/types/common.ts
+-@@ -36,3 +36,8 @@ export interface IUseFetch {
+-   isLoading: boolean;
+-   error: TError;
+- }
+-+
+-+export enum EGameStatus {
+-+  gameWon = 'gameWon',
+-+  gameOver = "gameOver",
+-+}
+-\ No newline at end of file

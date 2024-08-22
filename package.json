@@ -56,5 +56,10 @@
     "vite": "^5.0.0",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^0.34.6"
+  },
+  "husky": {
+  "hooks": {
+    "pre-commit": "exit 0"
   }
+}
 }

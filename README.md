@@ -1,7 +1,7 @@
 # Memory Game Project
 
 ## Overview
-This project is a React-based implementation of a Memory game, where users need to remember cards which they clicled. The main goal of this project is to demonstrate the use of React hooks to manage and utilize state while fetching and using data from an external API. In this version I decided to make the Odin Project assigment more difficult and impliment game version with rounds.
+This project is a React-based implementation of a Memory game, where users need to remember cards which they clickled. The main goal of this project is to demonstrate the use of React hooks to manage and utilize state while fetching and using data from an external API. In this version I decided to make the Odin Project assigment more difficult and implement game version with rounds.
 
 ## Features
 * Scoreboard that displays the current score and the highest score achieved so far
