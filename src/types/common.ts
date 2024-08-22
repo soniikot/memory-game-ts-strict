@@ -36,3 +36,8 @@ export interface IUseFetch {
   isLoading: boolean;
   error: TError;
 }
+
+export enum EGameStatus {
+  gameWon = 'gameWon',
+  gameOver = "gameOver",
+}

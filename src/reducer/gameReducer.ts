@@ -10,6 +10,9 @@ export const initialState: IState = {
   score: 0,
   isButtonsDisabled: false,
   roundCats: [],
+  //   isLoading: false,
+  //   error: null,
+  // data: []
 };
 
 export const gameReducer: Reducer<IState, IAction> = (state, action) => {

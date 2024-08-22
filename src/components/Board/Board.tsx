@@ -2,11 +2,11 @@ import { useContext } from 'react';
 import type { FC, MouseEvent, Dispatch } from 'react';
 import './Board.css';
 import { DispatchContext, StateContext } from '../../reducer/context';
-import type { IBoard, IAction } from '../../types/common';
+import type { IBoard } from '../../types/common';
 
 const Board: FC<IBoard> = ({ isLoading, error }) => {
   const state = useContext(StateContext);
-  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+  const dispatch = useContext(DispatchContext);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     const { id } = event.target as HTMLButtonElement;
@@ -25,13 +25,13 @@ const Board: FC<IBoard> = ({ isLoading, error }) => {
       <h2>Do not click at the same card twice!</h2>
       {isLoading && <div>Loading...</div>}
       {error && <div>{error}</div>}
-      <div className="catField">
-        {(state?.roundCats ?? []).map(({ id, url, title }) => (
+      {!error && (<div className="catField">
+        {(state.roundCats).map(({ id, url, title }) => (
           <button type="button" disabled={state.isButtonsDisabled} onClick={handleClick} key={id}>
             <img className="cardImage" id={id} src={url} alt={title} />
           </button>
         ))}
-      </div>
+      </div>)}
     </>
   );
 };

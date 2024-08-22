@@ -1,11 +1,11 @@
 import Confetti from 'react-confetti';
-import { useContext, type FC, MouseEventHandler, Dispatch } from 'react';
+import { useContext, type FC, MouseEventHandler } from 'react';
 import { DispatchContext, StateContext } from '../../reducer/context';
-import { IAction } from '../../types/common';
+import { EGameStatus } from '../../types/common';
 
 const GameStatus: FC = () => {
   const state = useContext(StateContext);
-  const dispatch = useContext(DispatchContext) as Dispatch<IAction>;
+  const dispatch = useContext(DispatchContext);
   const { gameStatus, round } = state;
 
   const startNextRound: MouseEventHandler<HTMLButtonElement> = () => {
@@ -14,10 +14,10 @@ const GameStatus: FC = () => {
 
   return (
     <div>
-      {gameStatus !== '' && (gameStatus === 'gameOver' || gameStatus === 'gameWon') && (
+      {gameStatus !== '' && (
         <div className="gameStatus">
-          <h3>{gameStatus === 'gameWon' ? ' Congratulations, you won!' : ' Game Over! '}</h3>
-          {gameStatus === 'gameWon' && (
+          <h3>{gameStatus === EGameStatus.gameWon ? ' Congratulations, you won!' : ' Game Over! '}</h3>
+          {gameStatus === EGameStatus.gameOver && (
             <>
               <Confetti className="confetti" width={1800} height={1000} />
               <button type="button" onClick={startNextRound}>
