@@ -1,11 +1,12 @@
 import { useContext } from 'react';
-import type { FC, MouseEvent, Dispatch } from 'react';
+import type { FC, MouseEvent } from 'react';
 import './Board.css';
 import { DispatchContext, StateContext } from '../../reducer/context';
-import type { IBoard } from '../../types/common';
+import { IBoard, EGameStatus } from '../../types/common';
 
 const Board: FC<IBoard> = ({ isLoading, error }) => {
   const state = useContext(StateContext);
+  const { gameStatus } = state;
   const dispatch = useContext(DispatchContext);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -13,7 +14,7 @@ const Board: FC<IBoard> = ({ isLoading, error }) => {
 
     dispatch({ type: 'card_clicked', payload: { id } });
 
-    if (state.gameStatus !== 'gameOver' && state.gameStatus !== 'gameWon') {
+    if (gameStatus !== EGameStatus.gameOver && gameStatus !== EGameStatus.gameWon) {
       dispatch({
         type: 'set_round_cats',
         payload: { roundCats: state.roundCats.sort(() => Math.random() - 0.5) },
@@ -25,13 +26,15 @@ const Board: FC<IBoard> = ({ isLoading, error }) => {
       <h2>Do not click at the same card twice!</h2>
       {isLoading && <div>Loading...</div>}
       {error && <div>{error}</div>}
-      {!error && (<div className="catField">
-        {(state.roundCats).map(({ id, url, title }) => (
-          <button type="button" disabled={state.isButtonsDisabled} onClick={handleClick} key={id}>
-            <img className="cardImage" id={id} src={url} alt={title} />
-          </button>
-        ))}
-      </div>)}
+      {!error && (
+        <div className="catField">
+          {state.roundCats.map(({ id, url, title }) => (
+            <button type="button" disabled={state.isButtonsDisabled} onClick={handleClick} key={id}>
+              <img className="cardImage" id={id} src={url} alt={title} />
+            </button>
+          ))}
+        </div>
+      )}
     </>
   );
 };

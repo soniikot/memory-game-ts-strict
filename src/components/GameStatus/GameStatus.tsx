@@ -17,14 +17,15 @@ const GameStatus: FC = () => {
       {gameStatus !== '' && (
         <div className="gameStatus">
           <h3>{gameStatus === EGameStatus.gameWon ? ' Congratulations, you won!' : ' Game Over! '}</h3>
-          {gameStatus === EGameStatus.gameOver && (
-            <>
-              <Confetti className="confetti" width={1800} height={1000} />
-              <button type="button" onClick={startNextRound}>
-                {round === 5 ? 'Start Again' : 'Start Next Round'}
-              </button>
-            </>
-          )}
+          {gameStatus === EGameStatus.gameOver ||
+            (EGameStatus.gameWon && (
+              <>
+                <Confetti className="confetti" width={1800} height={1000} />
+                <button type="button" onClick={startNextRound}>
+                  {round === 10 ? 'Start Again' : 'Start Next Round'}
+                </button>
+              </>
+            ))}
         </div>
       )}
     </div>

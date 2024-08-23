@@ -17,12 +17,16 @@ export interface IState {
   isClicked: { [x: string]: boolean }[];
   isButtonsDisabled: boolean;
   roundCats: ICatData[];
+  isLoading: boolean;
+  error: TError;
+  data: ICatData[];
 }
 export interface IAction {
   type: string;
   payload?: {
     id?: string;
     roundCats?: ICatData[];
+    data?: ICatData[];
   };
 }
 
@@ -39,5 +43,5 @@ export interface IUseFetch {
 
 export enum EGameStatus {
   gameWon = 'gameWon',
-  gameOver = "gameOver",
+  gameOver = 'gameOver',
 }

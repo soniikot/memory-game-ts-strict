@@ -5,8 +5,8 @@ import { StateContext } from '../../reducer/context';
 const Score: FC = () => {
   const bestScore = parseInt(localStorage.getItem('bestScore') || '0', 10);
   const state = useContext(StateContext);
-  
-  const { score } = state
+
+  const { score } = state;
 
   if (state.score > bestScore) {
     localStorage.setItem('bestScore', score.toString());

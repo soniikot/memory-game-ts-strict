@@ -10,9 +10,9 @@ export const initialState: IState = {
   score: 0,
   isButtonsDisabled: false,
   roundCats: [],
-  //   isLoading: false,
-  //   error: null,
-  // data: []
+  isLoading: false,
+  error: null,
+  data: [],
 };
 
 export const gameReducer: Reducer<IState, IAction> = (state, action) => {
@@ -27,6 +27,7 @@ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
         score: 0,
         isClicked: [],
         isButtonsDisabled: false,
+        roundCats: state.data.slice(0, Math.min(10, 1 * 2)),
       };
     case 'card_clicked': {
       if (!action.payload) {
@@ -67,14 +68,16 @@ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
         round: state.round + 1,
         isClicked: [],
         isButtonsDisabled: false,
+        roundCats: state.data.slice(0, Math.min(10, 0 + state.round + 1 * 2)),
       };
-    case 'set_round_cats':
-      if (!action.payload) {
+
+    case 'set_all_cats':
+      if (!action.payload || !action.payload.data) {
         throw new Error('action.payload is required');
       }
       return {
         ...state,
-        roundCats: action.payload.roundCats || [],
+        data: action.payload.data,
       };
 
     default:
