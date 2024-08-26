@@ -40,5 +40,6 @@ module.exports = {
         unnamedComponents: 'arrow-function',
       },
     ],
+    'spaced-comment': ['warn', 'never'],
   },
 };

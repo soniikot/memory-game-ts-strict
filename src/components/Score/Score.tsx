@@ -2,6 +2,11 @@ import type { FC } from 'react';
 import { useContext } from 'react';
 import { StateContext } from '../../reducer/context';
 
+//TODO
+/**
+ * remove magic numbers
+ *
+ **/
 const Score: FC = () => {
   const bestScore = parseInt(localStorage.getItem('bestScore') || '0', 10);
   const state = useContext(StateContext);

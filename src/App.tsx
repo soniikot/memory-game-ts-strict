@@ -9,11 +9,21 @@ const App = () => {
   const state = useContext(StateContext);
   const dispatch = useContext(DispatchContext);
 
-  const { showStartButton, showBoard, round, isLoading, error } = state;
+  const { showStartButton, showBoard, round } = state;
 
   const startGame = () => {
     dispatch({ type: 'start_game' });
   };
+
+  //TODO
+  /**
+   * StartGame comnponent
+   *
+   * dispatch
+   * start
+   *
+   *
+   **/
 
   return (
     <>
@@ -27,7 +37,7 @@ const App = () => {
         {showBoard && (
           <>
             <GameStatus />
-            <Board isLoading={isLoading} error={error} />
+            <Board />
             <h2>Round {round}</h2>
             <Score />
           </>

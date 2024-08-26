@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { ICatData, TError, IUseFetch } from '../types/common';
 
+const URL = 'https://api.thecatapi.com/v1/images/search?limit=10';
+
 function useFetch(): IUseFetch {
-  const [data, setData] = useState<ICatData[]>([]);
+  const [data, setData] = useState<ICatData[]>([]); // Boolean([]) ?
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<TError>(null);
 
   async function getData() {
-    const url = 'https://api.thecatapi.com/v1/images/search?limit=10';
     try {
-      const response = await fetch(url);
+      const response = await fetch(URL);
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }

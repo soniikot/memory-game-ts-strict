@@ -9,10 +9,17 @@ export const DispatchContext = createContext<Dispatch<IAction>>(() => ({ type: '
 
 export const StateProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
-  const { data } = useFetch();
-  console.log(data);
+  const { data, isLoading, error } = useFetch();
+
+  console.log(isLoading); /// remove
+
   useEffect(() => {
-    if (data) {
+    dispatch({ type: 'loading', payload: { isLoading } });
+    dispatch({ type: 'error', payload: { error } });
+  }, [isLoading, error]);
+
+  useEffect(() => {
+    if (data.length > 0) {
       dispatch({ type: 'set_all_cats', payload: { data } });
     }
   }, [data]);

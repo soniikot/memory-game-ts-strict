@@ -17,22 +17,51 @@ export interface IState {
   isClicked: { [x: string]: boolean }[];
   isButtonsDisabled: boolean;
   roundCats: ICatData[];
-  isLoading: boolean;
-  error: TError;
+  isLoading?: boolean;
+  error?: TError;
   data: ICatData[];
 }
+
+//TODO
+/**
+  *
+  * possibly make different actions
+  * 
+  * 
+  * 
+  * 
+  * 
+  * 
+  * 
+  * 
+export interface IGenAction {
+  type: string;
+}
+
+export interface IActionNoPayload extends IGenAction {}
+
+export interface IActionWithPayload extends IGenAction {
+  payload: {
+    id?: string;
+    roundCats?: ICatData[];
+    data?: ICatData[];
+    isLoading?: boolean;
+    error?: TError | null;
+  };
+}
+
+  * 
+  **/
+
 export interface IAction {
   type: string;
   payload?: {
     id?: string;
     roundCats?: ICatData[];
     data?: ICatData[];
+    isLoading?: boolean;
+    error?: TError | null;
   };
-}
-
-export interface IBoard {
-  isLoading: boolean;
-  error: TError;
 }
 
 export interface IUseFetch {

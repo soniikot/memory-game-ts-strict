@@ -3,6 +3,11 @@ import { useContext, type FC, MouseEventHandler } from 'react';
 import { DispatchContext, StateContext } from '../../reducer/context';
 import { EGameStatus } from '../../types/common';
 
+//TODO
+/**
+ * use enums for action types
+ **/
+
 const GameStatus: FC = () => {
   const state = useContext(StateContext);
   const dispatch = useContext(DispatchContext);

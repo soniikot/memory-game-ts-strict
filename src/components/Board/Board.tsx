@@ -2,10 +2,13 @@ import { useContext } from 'react';
 import type { FC, MouseEvent } from 'react';
 import './Board.css';
 import { DispatchContext, StateContext } from '../../reducer/context';
-import { IBoard, EGameStatus } from '../../types/common';
+import { EGameStatus } from '../../types/common';
 
-const Board: FC<IBoard> = ({ isLoading, error }) => {
+const Board: FC = () => {
   const state = useContext(StateContext);
+
+  const { isLoading, error } = state;
+
   const { gameStatus } = state;
   const dispatch = useContext(DispatchContext);
 
