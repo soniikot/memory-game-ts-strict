@@ -19,58 +19,36 @@ export interface IState {
   roundCats: ICatData[];
   isLoading?: boolean;
   error?: TError;
-  data: ICatData[];
+  data: ICatData[] | undefined;
 }
 
-//TODO
-/**
-  *
-  * possibly make different actions
-  * 
-  * 
-  * 
-  * 
-  * 
-  * 
-  * 
-  * 
-export interface IGenAction {
-  type: string;
+interface IActionNoPayload {
+  type: EAction.startGame | EAction.startNewRound;
 }
 
-export interface IActionNoPayload extends IGenAction {}
-
-export interface IActionWithPayload extends IGenAction {
+interface IActionWithPayload {
+  type: EAction.cardClicked | EAction.setAllCats | EAction.loading | EAction.error;
   payload: {
     id?: string;
+    data?: ICatData[] | undefined;
     roundCats?: ICatData[];
-    data?: ICatData[];
     isLoading?: boolean;
     error?: TError | null;
   };
 }
 
-  * 
-  **/
-
-export interface IAction {
-  type: string;
-  payload?: {
-    id?: string;
-    roundCats?: ICatData[];
-    data?: ICatData[];
-    isLoading?: boolean;
-    error?: TError | null;
-  };
-}
-
-export interface IUseFetch {
-  data: ICatData[];
-  isLoading: boolean;
-  error: TError;
-}
+export type IAction = IActionNoPayload | IActionWithPayload;
 
 export enum EGameStatus {
   gameWon = 'gameWon',
   gameOver = 'gameOver',
+}
+
+export enum EAction {
+  startGame = 'start_game',
+  cardClicked = 'card_clicked',
+  startNewRound = 'start_new_round',
+  setAllCats = 'set_all_cats',
+  loading = 'loading',
+  error = 'error',
 }

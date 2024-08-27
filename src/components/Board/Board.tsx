@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import type { FC, MouseEvent } from 'react';
 import './Board.css';
 import { DispatchContext, StateContext } from '../../reducer/context';
-import { EGameStatus } from '../../types/common';
+import { EGameStatus, EAction } from '../../types/common';
 
 const Board: FC = () => {
   const state = useContext(StateContext);
@@ -15,11 +15,11 @@ const Board: FC = () => {
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     const { id } = event.target as HTMLButtonElement;
 
-    dispatch({ type: 'card_clicked', payload: { id } });
+    dispatch({ type: EAction.cardClicked, payload: { id } });
 
     if (gameStatus !== EGameStatus.gameOver && gameStatus !== EGameStatus.gameWon) {
       dispatch({
-        type: 'set_round_cats',
+        type: EAction.setAllCats,
         payload: { roundCats: state.roundCats.sort(() => Math.random() - 0.5) },
       });
     }

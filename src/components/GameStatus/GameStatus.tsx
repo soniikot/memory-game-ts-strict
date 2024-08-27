@@ -1,12 +1,7 @@
 import Confetti from 'react-confetti';
 import { useContext, type FC, MouseEventHandler } from 'react';
 import { DispatchContext, StateContext } from '../../reducer/context';
-import { EGameStatus } from '../../types/common';
-
-//TODO
-/**
- * use enums for action types
- **/
+import { EAction, EGameStatus } from '../../types/common';
 
 const GameStatus: FC = () => {
   const state = useContext(StateContext);
@@ -14,7 +9,7 @@ const GameStatus: FC = () => {
   const { gameStatus, round } = state;
 
   const startNextRound: MouseEventHandler<HTMLButtonElement> = () => {
-    dispatch({ type: 'start_new_round' });
+    dispatch({ type: EAction.startNewRound });
   };
 
   return (

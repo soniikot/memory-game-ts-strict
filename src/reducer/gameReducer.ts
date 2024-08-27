@@ -1,6 +1,6 @@
 import type { Reducer } from 'react';
-import { IState, IAction } from '../types/common';
-import { TOTAL_PICTURES, NEW_ROUND_PICTURES_ADD_NUM } from './constants';
+import { IState, IAction, EGameStatus, EAction } from '../types/common';
+import NEW_ROUND_PICTURES_ADD_NUM from './constants';
 
 export const initialState: IState = {
   showBoard: false,
@@ -16,26 +16,12 @@ export const initialState: IState = {
   data: [],
 };
 
-//TODO
-/**
- *
- * ENUM EActionType {
- *
- * startGame = 'start_game'
- *
- * }
- *
- *
- * magic numbers
- *
- * .constants.ts
- * const TOTAL_PICTURES = 10
- *
- **/
-
 export const gameReducer: Reducer<IState, IAction> = (state, action) => {
   switch (action.type) {
-    case 'start_game':
+    case EAction.startGame:
+      if (!state.data) {
+        return state;
+      }
       return {
         ...state,
         showBoard: true,
@@ -45,24 +31,20 @@ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
         score: 0,
         isClicked: [],
         isButtonsDisabled: false,
-        roundCats: state.data.slice(0, Math.min(TOTAL_PICTURES, NEW_ROUND_PICTURES_ADD_NUM)),
+        roundCats: state.data.slice(0, NEW_ROUND_PICTURES_ADD_NUM),
       };
 
-    case 'card_clicked': {
-      if (!action.payload) {
-        throw new Error('action.payload is required');
-      }
-
+    case EAction.cardClicked: {
       const { id } = action.payload;
 
       if (id === undefined || id === null) {
-        throw new Error('id is required');
+        return state;
       }
 
       if (state.isClicked.some((clickedImage) => clickedImage[id] !== undefined)) {
         return {
           ...state,
-          gameStatus: 'gameOver',
+          gameStatus: EGameStatus.gameOver,
           showStartButton: true,
           isButtonsDisabled: true,
         };
@@ -77,7 +59,7 @@ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
       if (newState.isClicked.length === newState.roundCats.length) {
         return {
           ...newState,
-          gameStatus: 'gameWon',
+          gameStatus: EGameStatus.gameWon,
           isButtonsDisabled: true,
         };
       }
@@ -85,41 +67,33 @@ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
       return newState;
     }
 
-    case 'start_new_round':
+    case EAction.startNewRound:
+      if (!state.data) {
+        return state;
+      }
       return {
         ...state,
         gameStatus: '',
         round: state.round + 1,
         isClicked: [],
         isButtonsDisabled: false,
-        roundCats: state.data.slice(0, Math.min(TOTAL_PICTURES, state.round + NEW_ROUND_PICTURES_ADD_NUM)),
+        roundCats: state.data.slice(0, state.round + NEW_ROUND_PICTURES_ADD_NUM),
       };
 
-    case 'set_all_cats':
-      if (!action.payload || !action.payload.data) {
-        throw new Error('action.payload is required');
-      }
-
+    case EAction.setAllCats:
       return {
         ...state,
         data: action.payload.data,
       };
 
-    case 'loading': {
-      if (!action.payload) {
-        return state;
-      }
+    case EAction.loading: {
       return {
         ...state,
         isLoading: action.payload.isLoading,
       };
     }
 
-    case 'error': {
-      if (!action.payload) {
-        return state; // Early return pattern
-      }
-
+    case EAction.error: {
       return {
         ...state,
         error: action.payload.error,

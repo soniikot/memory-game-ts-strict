@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ICatData, TError, IUseFetch } from '../types/common';
+import { ICatData, TError } from '../types/common';
 
 const URL = 'https://api.thecatapi.com/v1/images/search?limit=10';
 
-function useFetch(): IUseFetch {
-  const [data, setData] = useState<ICatData[]>([]); // Boolean([]) ?
+function useFetch() {
+  const [data, setData] = useState<ICatData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<TError>(null);
 

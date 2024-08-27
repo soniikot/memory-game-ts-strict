@@ -1,3 +1,3 @@
-export const TOTAL_PICTURES = 10;
+const NEW_ROUND_PICTURES_ADD_NUM = 2;
 
-export const NEW_ROUND_PICTURES_ADD_NUM = 2;
+export default NEW_ROUND_PICTURES_ADD_NUM;

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a React-based implementation of a Memory game, where users need to remember cards which they clicked. The main goal of this project is to demonstrate the use of React hooks to manage and utilize state while fetching and using data from an external API. In this version I decided to make the Odin Project assigment more difficult and implement game version with rounds.
+This project is a React-based implementation of a Memory game, where users need to remember cards which they clicked. The main goal of this project is to demonstrate the use of React hooks to manage and utilize state while fetching and using data from an external API. In this version I decided to make the Odin Project assignment more difficult and implement game version with rounds.
 
 ## Features
 
@@ -21,10 +21,9 @@ This project is a React-based implementation of a Memory game, where users need 
 - Linting:
   ESLint (AirBNB), + prettier
 - Language:
-
-* Typescript
-* HTML
-* CSS
+  - Typescript
+  - HTML
+  - CSS
 
 ## Implementation
 
