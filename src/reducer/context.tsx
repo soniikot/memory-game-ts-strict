@@ -5,7 +5,7 @@ import { IState, IAction, EAction } from '../types/common';
 import useFetch from '../hooks/useFetch';
 
 export const StateContext = createContext<IState>(initialState);
-export const DispatchContext = createContext<Dispatch<IAction>>(() => ({ type: 'start_new_round' }));
+export const DispatchContext = createContext<Dispatch<IAction>>(() => ({ type: EAction.startNewRound }));
 
 export const StateProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);

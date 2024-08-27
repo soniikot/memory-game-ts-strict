@@ -1,6 +1,6 @@
 import type { Reducer } from 'react';
 import { IState, IAction, EGameStatus, EAction } from '../types/common';
-import NEW_ROUND_PICTURES_ADD_NUM from './constants';
+import FIRST_ROUND_PICTURES from './constants';
 
 export const initialState: IState = {
   showBoard: false,
@@ -41,7 +41,7 @@ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
         return state;
       }
 
-      if (state.isClicked.some((clickedImage) => clickedImage[id] !== undefined)) {
+      if (state.isClicked.some((clickedImage) => clickedImage[id])) {
         return {
           ...state,
           gameStatus: EGameStatus.gameOver,
@@ -77,10 +77,14 @@ export const gameReducer: Reducer<IState, IAction> = (state, action) => {
         round: state.round + 1,
         isClicked: [],
         isButtonsDisabled: false,
-        roundCats: state.data.slice(0, state.round + NEW_ROUND_PICTURES_ADD_NUM),
+        roundCats: state.data.slice(0, state.round + FIRST_ROUND_PICTURES),
       };
 
     case EAction.setAllCats:
+      if (!action.payload.data) {
+        return state;
+      }
+
       return {
         ...state,
         data: action.payload.data,

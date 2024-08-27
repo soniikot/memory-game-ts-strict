@@ -1,3 +1,3 @@
-const NEW_ROUND_PICTURES_ADD_NUM = 2;
+const FIRST_ROUND_PICTURES = 2;
 
-export default NEW_ROUND_PICTURES_ADD_NUM;
+export default FIRST_ROUND_PICTURES;
